@@ -1,0 +1,11 @@
+File opened at: 2022/05/28 13:02:17
+Built with gc go1.16.10 for darwin/amd64
+[I 2022/05/28 13:02:17.271 main.go:41] log level: TRACE
+[I 2022/05/28 13:02:17.272 configtool.go:251] ConfigValidatorInfo:::{BscAddrMapList:[{BscNodePubkeyAddr:0x38580eFe497b22ACc29783273e725a2a4F2AEEA4 TmNodePubkeyAddr:9889f13e2a9ba08140f17b42ef5ed6c5TMPubkey11} {BscNodePubkeyAddr:0x29dA95fa6ed88b431218A54bd8dFEAD68918A3B5 TmNodePubkeyAddr:821a12d263c93ee624e7bb8fd35800Pubkey222} {BscNodePubkeyAddr:0x947DD1558257a631049Fad9D686f427F86033c16 TmNodePubkeyAddr:4145b7dbcb8637848604ad3Pubkey333}] RequestTrustInterval:0 WebPort:4444}
+[I 2022/05/28 13:02:17.272 configtool.go:231] ConfigLibp2pAddrInfo:::{Libp2pAddrMapList:[{InneNetAddr:192.168.1.221 OuterNetAddr:106.3.133.178 Libp2pListenPort:45759} {InneNetAddr:192.168.1.222 OuterNetAddr:106.3.133.179 Libp2pListenPort:45759} {InneNetAddr:192.168.1.223 OuterNetAddr:106.3.133.180 Libp2pListenPort:45759}]}
+[I 2022/05/28 13:12:40.665 handle.go:163] fun=AddValidatorNodeHandler() bef--,request={http://192.168localvoteclien/  3D3781351A3EE9E4}
+[I 2022/05/28 13:13:16.860 handle.go:163] fun=AddValidatorNodeHandler() bef--,request={http://192.168localvoteclien/  3D3781351A3EE9E4}
+File opened at: 2022/05/28 13:23:43
+Built with gc go1.16.10 for darwin/amd64
+[I 2022/05/28 13:23:43.168 main.go:44] log level: TRACE
+[I 2022/05/28 13:23:43.168 configtool.go:251] ConfigValidatorInfo:::{BscAddrMapList:[{BscNodePubkeyAddr:0x38580eFe497b22ACc29783273e725a2a4F2AEEA4 TmNodePubkeyAddr:9889f13e2a9ba08140f17b42ef5ed6c5TMPubkey11} {BscNodePubkeyAddr:0x29dA95fa6ed88b431218A54bd8dFEAD68918A3B5 TmNodePubkeyAddr:821a12d263c93ee624e7bb8fd35800Pubkey222} {BscNodePubkeyAddr:0x947DD1558257a631049Fad9D686f427F86033c16 TmNodePubkeyAddr:4145b7dbcb8637848604ad3Pubkey333}] RequestTrustInterval:0 WebPort:7200}

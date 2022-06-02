@@ -1,0 +1,39 @@
+{
+	"libp2p_addr_maps": [{
+		"inne_net_addr": "192.168.1.221",
+		"outer_net_addr": "106.3.133.178",
+		"libp2p_listen_port": 45759
+		},
+		{
+			"inne_net_addr": "192.168.1.222",
+			"outer_net_addr": "106.3.133.179",
+			"libp2p_listen_port": 45759
+		},
+		{
+			"inne_net_addr": "192.168.1.225",
+			"outer_net_addr": "106.3.133.180",
+			"libp2p_listen_port": 45759
+		},
+		{
+			"inne_net_addr": "192.168.1.223",
+			"outer_net_addr": "210.73.218.171",
+			"libp2p_listen_port": 45759
+		},
+		{
+			"inne_net_addr": "192.168.1.224",
+			"outer_net_addr": "210.73.218.172",
+			"libp2p_listen_port": 45759
+		},
+		{
+			"inne_net_addr": "192.168.1.226",
+			"outer_net_addr": "101.251.223.190",
+			"libp2p_listen_port": 45759
+		},
+		{
+			"inne_net_addr": "192.168.1.227",
+			"outer_net_addr": "101.251.223.189",
+			"libp2p_listen_port": 45759
+		}
+	]
+}
+
