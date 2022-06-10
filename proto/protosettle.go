@@ -238,8 +238,8 @@ func  Success(status ErrorInfo ) bool {
 //20220527add
 
 //client分组周期内对rsm的检测投票msg
-type ClientVoteMsg struct{
-	ClientId string			`json:"client_id"`
+type ClientVoteReq struct{
+	//ClientId string			`json:"client_id"`
 	ClientAddress string	`json:"client_address"`
 	RsmGroupId string		`json:"rsm_group_id"`
 	Rsmid string			`json:"rms_id"`
@@ -249,22 +249,49 @@ type ClientVoteMsg struct{
 	ClientSignStr string	`json:"client_sign_str"`
 }
 
+type ClientVoteResq struct {
+	ReturnInfo
+	StatusStr	string `json:"server_status"`
+}
 //向serverin 请求分组
+
+type ReturnInfo struct {
+	ResultCode int `json:"code"`
+	ResultMsg string `json:"msg"`
+}
 type RsmServerGroupReq struct{
-	VoteServerId int64	`json:"vote_server_id"`
+	//VoteServerId int64	`json:"vote_server_id"`
 	VoteSignStr string
 }
 
 type RsmServerGroupResq struct{
-	startime int64	`json:"start_time"`
+	ReturnInfo
+	Startime int64	`json:"start_time"`
 	Endtime int64	`json:"end_time"`
 	RsmCount	string	`json:"group_count"`
-	RSMGrouList [][]interface{}	`json:"groups"`
+	RSMGrouList [][]interface{}	`json:"groupsbef"`
+	//0606add
+	GroupAttach interface{} `json:"groups002"` // 协议数据
+	GroupItems	[]GroupItems  `json:"groups"`
+	RsmGroupId	string	`json:"rsm_group_id"`
 
 	//map[Rsmnode][]string
 	ServerSignStr string
 }
-type Rsmnode struct{
+//0607add
+
+type GroupAttachRSM struct {
+	//RMSGroupList map[string][]string
+	RMSGroupList [][]interface{}
+}
+type GroupItems struct{
+	RmsId string		`json:"rsm_id"`
+	Clients []string	`json:"clients"`
+}
+//0604add
+//ServerGroup map[int]map[transproto.Rsmnode][]string
+
+type RsmNode struct{
 	RsmId 	string
 	GroupId	string
 }
@@ -272,7 +299,7 @@ type Rsmnode struct{
 type RsmServerGroupInfo struct{
 	startime int64
 	Endtime int64
-	ClientVertifyMap map[Rsmnode][]string
+	ClientVertifyMap map[RsmNode][]string
 	//
 	Rsmcount int
 	ServerSignStr string
@@ -281,11 +308,18 @@ type RsmServerGroupInfo struct{
 //to add，节点广播来的zmq的cliet的投票消息；
 
 //发给链节点的消息,构造clientlist[]及投票详情(垃圾数据过滤掉)
-type VoteServerMsgToNode struct{
-	VoteSeverid	string
-	Clientvote []ClientVoteMsg
-	Serversignstr string
+//0608to insert mysqldb;
+type RSMVoteGroupMsgs struct{
+	VoteSeverId		string
+	SeverGroupId	int
+
+	ClientVote []ClientVoteResq
+	ServerSignStr string
 	//map[rms]clientlist[]
+	//ClientID的投票结果
+	ClientVertifyMap map[string][]bool
+	GatherTrustCount int
+	GatherVertifyResult bool
 }
 
 //20220601add

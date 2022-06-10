@@ -3,6 +3,8 @@ package main
 import (
 	"Ethanim_Vote_Server/config"
 	"Ethanim_Vote_Server/handle"
+	"Ethanim_Vote_Server/trust"
+	"Ethanim_Vote_Server/utils"
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/mkideal/log"
@@ -36,6 +38,9 @@ func main() {
 	//todo,时间戳比较；
 	fmt.Println("curtime is:%v",curtime)
 	strHostPort3 :=  4422//3333
+	//0607testing
+	//return
+	//end 0607
 	//0217ad
 	fmt.Println("strHost0011 is :%s", strHostPort3)
 	SetupNodeServer(strHostPort3)
@@ -57,7 +62,20 @@ func main() {
 
 	strHost:=fmt.Sprintf(":%d",gbConf.WebPort)
 	fmt.Println("strHost is :%s", strHost)
+	//0607add
+	ht:=utils.CHttpClientEx{}
+	ht.Init()
+	//192.168.1.114
+	//http://10.200.1.89:5000/rsm/groups
+	//cururl := "http://10.200.1.24:5000"
+	cururl := gbConf.GroupServerUrl
+	fmt.Println("GroupServerUrl is :%s", cururl)
+	cli := trust.NewRSMServerCli(cururl)
+	//127.0.0.1:8999
+	GroupAttachRSMMap, err := cli.GetRsmGrouplist(ht)
+	fmt.Println("after GetRsmGrouplist(),get grouprsmMap is :%v,err is:%v", GroupAttachRSMMap,err)
 
+	/*
 	//0507addfor ipmap
 	err = config.InitLibp2pAddrMapInfo()
 	if  nil!=err {
@@ -79,7 +97,7 @@ func main() {
 		xsrcmap[peerOuterAddr] = addrItem
 	}
 	fmt.Printf("checklibp2p--get xsrcmap map len is:%d,xsrcmap info:is %v\n",len(xsrcmap),xsrcmap)
-
+	*/
 	//交易发送节点的配置
 	//ethclientrpc.ReqNodeUrl = gbConf.BSCNodeUrl
 	fmt.Println("cur cfgparams: ReqNodeValidatorInfo is :%v", gbConf.BscAddrMapList)
@@ -89,6 +107,8 @@ func main() {
 	//0601add
 	handle.StartVoteServer()
 	router.HandleFunc("/remote/AddValidator", handle.AddValidatorNodeHandler)
+
+	router.HandleFunc("/remote/ClientVoteRSM", handle.ReceiveClientVoteHandler)
 
 	err =http.ListenAndServe(strHost, router)
 	if nil!=err {

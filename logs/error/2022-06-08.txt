@@ -1,0 +1,4 @@
+File opened at: 2022/06/08 17:58:27
+Built with gc go1.16.10 for darwin/amd64
+[E 2022/06/08 17:58:27.971 HttpClientEx.go:171] http.Do failed,[err=Post "http://192.168.1.223:5000/rsm/groups": dial tcp 192.168.1.223:5000: connect: network is unreachable][url=http://192.168.1.223:5000/rsm/groups]
+[E 2022/06/08 17:58:27.971 groupservercli.go:58] coinType :coinType,ht.RequestResponseJsonJson  status=0,error=6012.Post "http://192.168.1.223:5000/rsm/groups": dial tcp 192.168.1.223:5000: connect: network is unreachable url=http://192.168.1.223:5000/rsm/groups 

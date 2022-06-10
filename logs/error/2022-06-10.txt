@@ -1,0 +1,4 @@
+File opened at: 2022/06/10 15:51:57
+Built with gc go1.16.10 for darwin/amd64
+[E 2022/06/10 15:51:57.533 HttpClientEx.go:171] http.Do failed,[err=Post "/rsm/groups": unsupported protocol scheme ""][url=/rsm/groups]
+[E 2022/06/10 15:51:57.533 groupservercli.go:58] coinType :coinType,ht.RequestResponseJsonJson  status=0,error=6012.Post "/rsm/groups": unsupported protocol scheme "" url=/rsm/groups 

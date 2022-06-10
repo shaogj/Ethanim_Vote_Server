@@ -1,0 +1,22 @@
+File opened at: 2022/06/08 17:58:27
+Built with gc go1.16.10 for darwin/amd64
+[I 2022/06/08 17:58:27.970 main.go:51] log level: TRACE
+[I 2022/06/08 17:58:27.970 configtool.go:206] ConfigValidatorInfo:::{BscAddrMapList:[{BscNodePubkeyAddr:0x38580eFe497b22ACc29783273e725a2a4F2AEEA4 TmNodePubkeyAddr:9889f13e2a9ba08140f17b42ef5ed6c5TMPubkey11} {BscNodePubkeyAddr:0x29dA95fa6ed88b431218A54bd8dFEAD68918A3B5 TmNodePubkeyAddr:821a12d263c93ee624e7bb8fd35800Pubkey222} {BscNodePubkeyAddr:0x947DD1558257a631049Fad9D686f427F86033c16 TmNodePubkeyAddr:4145b7dbcb8637848604ad3Pubkey333}] RequestTrustInterval:0 WebPort:7200 GroupServerUrl:http://192.168.1.223:5000}
+[I 2022/06/08 17:58:31.986 handle.go:243] Succ Invoke RequestRSMGroupInfo()' get getValidators!,RequestRSMGroupInfo is :ssss444
+[I 2022/06/08 17:58:31.986 handle.go:292] succ Invoke cur RequestTrustInfo(),get trustNum is14,get getTrustInfo is:&{0 0 map[] 14 ServerSignStrnfo43},err is:<nil>
+[I 2022/06/08 17:58:35.991 handle.go:243] Succ Invoke RequestRSMGroupInfo()' get getValidators!,RequestRSMGroupInfo is :ssss444
+[I 2022/06/08 17:58:35.991 handle.go:292] succ Invoke cur RequestTrustInfo(),get trustNum is14,get getTrustInfo is:&{0 0 map[] 14 ServerSignStrnfo43},err is:<nil>
+File opened at: 2022/06/08 18:33:58
+Built with gc go1.16.10 for darwin/amd64
+[I 2022/06/08 18:33:58.471 main.go:51] log level: TRACE
+[I 2022/06/08 18:33:58.472 configtool.go:206] ConfigValidatorInfo:::{BscAddrMapList:[{BscNodePubkeyAddr:0x38580eFe497b22ACc29783273e725a2a4F2AEEA4 TmNodePubkeyAddr:9889f13e2a9ba08140f17b42ef5ed6c5TMPubkey11} {BscNodePubkeyAddr:0x29dA95fa6ed88b431218A54bd8dFEAD68918A3B5 TmNodePubkeyAddr:821a12d263c93ee624e7bb8fd35800Pubkey222} {BscNodePubkeyAddr:0x947DD1558257a631049Fad9D686f427F86033c16 TmNodePubkeyAddr:4145b7dbcb8637848604ad3Pubkey333}] RequestTrustInterval:0 WebPort:7200 GroupServerUrl:http://192.168.1.223:5000}
+[I 2022/06/08 18:33:58.503 groupservercli.go:63] ac.url :http://192.168.1.223:5000/rsm/groups,GetRsmGrouplist() res={{0 } 1654684361 1654684421  [] <nil> [{0x33cF01315d06886b7335f1AC30DFDE44c85fb02f [1HpwhgRWu5GXEChvfhhs3Ciw6NFmTqJQwo 0xf802883F1bC52Cf27611A48d7DD024Cc9FEdb7e4 1BqooifC8NXDKrdgj4XZcVqRoHPbuoYsf4 18LAmyDBB9xQ9A8heueTZiEAoqGLcKZda5]} {0x44cF01315d06886b7335f1AC30DFDE44c85fb02f [15BRfJz7FsnKGbEe6ta8QvntnkCifjJotK 17SMUgoAzFZ6RKnmaefnmu8Dq6rUU3saSR 1LBJSG7o77VWR8uwzf8VST1BdHRyRoLrta 18xjasCWMkYgXcX5SU66CRpVCF578RbaaP]} {0x55cF01315d06886b7335f1AC30DFDE44c85fb02f [19aEXqP4EWSrYWJD7Ddvh9zgE83XG5h3hp 15apTZ7zMJGgAMLe52Yp2wAkBav8Ckkzqq 1MSe1JLVpQrrEpkrLLrBGja2mrCBQTUDaA]}]  }
+[I 2022/06/08 18:33:58.503 groupservercli.go:106] check001 in GetRsmGrouplist(),cur RsmInfo is:0x33cF01315d06886b7335f1AC30DFDE44c85fb02f,Clients list is:[1HpwhgRWu5GXEChvfhhs3Ciw6NFmTqJQwo 0xf802883F1bC52Cf27611A48d7DD024Cc9FEdb7e4 1BqooifC8NXDKrdgj4XZcVqRoHPbuoYsf4 18LAmyDBB9xQ9A8heueTZiEAoqGLcKZda5]
+[I 2022/06/08 18:33:58.503 groupservercli.go:106] check001 in GetRsmGrouplist(),cur RsmInfo is:0x44cF01315d06886b7335f1AC30DFDE44c85fb02f,Clients list is:[15BRfJz7FsnKGbEe6ta8QvntnkCifjJotK 17SMUgoAzFZ6RKnmaefnmu8Dq6rUU3saSR 1LBJSG7o77VWR8uwzf8VST1BdHRyRoLrta 18xjasCWMkYgXcX5SU66CRpVCF578RbaaP]
+[I 2022/06/08 18:33:58.503 groupservercli.go:106] check001 in GetRsmGrouplist(),cur RsmInfo is:0x55cF01315d06886b7335f1AC30DFDE44c85fb02f,Clients list is:[19aEXqP4EWSrYWJD7Ddvh9zgE83XG5h3hp 15apTZ7zMJGgAMLe52Yp2wAkBav8Ckkzqq 1MSe1JLVpQrrEpkrLLrBGja2mrCBQTUDaA]
+[I 2022/06/08 18:34:02.508 handle.go:243] Succ Invoke RequestRSMGroupInfo()' get getValidators!,RequestRSMGroupInfo is :ssss444
+[I 2022/06/08 18:34:02.508 handle.go:292] succ Invoke cur RequestTrustInfo(),get trustNum is14,get getTrustInfo is:&{0 0 map[] 14 ServerSignStrnfo43},err is:<nil>
+[I 2022/06/08 18:34:06.510 handle.go:243] Succ Invoke RequestRSMGroupInfo()' get getValidators!,RequestRSMGroupInfo is :ssss444
+[I 2022/06/08 18:34:06.510 handle.go:292] succ Invoke cur RequestTrustInfo(),get trustNum is14,get getTrustInfo is:&{0 0 map[] 14 ServerSignStrnfo43},err is:<nil>
+[I 2022/06/08 18:34:10.515 handle.go:243] Succ Invoke RequestRSMGroupInfo()' get getValidators!,RequestRSMGroupInfo is :ssss444
+[I 2022/06/08 18:34:10.515 handle.go:292] succ Invoke cur RequestTrustInfo(),get trustNum is14,get getTrustInfo is:&{0 0 map[] 14 ServerSignStrnfo43},err is:<nil>

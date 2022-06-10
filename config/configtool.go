@@ -210,7 +210,7 @@ type  ConfigTrustInfomation struct {
 	BscAddrMapList       []BscAddrMap `json:"bsc_pubkey_addr_maps"`
 	RequestTrustInterval int          `json:"request_token_key"`
 	WebPort	int				`json:"WebPort"`
-
+	GroupServerUrl	string `json:"group_server_url"`
 }
 
 type Libp2pAddrMap struct {
