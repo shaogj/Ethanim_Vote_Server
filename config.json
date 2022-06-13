@@ -13,6 +13,8 @@
 
 		}
 	],
+	"group_server_url": "http://192.168.1.223:5000",
+	"request_interval": 40,
 	"WebPort": 7200
 }
 

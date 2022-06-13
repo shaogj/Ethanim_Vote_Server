@@ -211,6 +211,7 @@ type  ConfigTrustInfomation struct {
 	RequestTrustInterval int          `json:"request_token_key"`
 	WebPort	int				`json:"WebPort"`
 	GroupServerUrl	string `json:"group_server_url"`
+	RequestInterval int `json:"request_interval"`
 }
 
 type Libp2pAddrMap struct {

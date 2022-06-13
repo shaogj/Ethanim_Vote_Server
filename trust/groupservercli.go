@@ -42,7 +42,8 @@ func NewRSMServerCli(urlStr string) *GroupServerCli {
 	}
 }
 
-func (ac GroupServerCli) GetRsmGrouplist(ht utils.CHttpClientEx) (*[]proto.GroupItems, error) {
+//*[]proto.GroupItems,
+func (ac GroupServerCli) GetRsmGrouplist(ht utils.CHttpClientEx) (servergroupresq *proto.RsmServerGroupResq ,err error) {
 	//0607add
 	//ht:=utils.CHttpClientEx{}
 	//ht.Init()
@@ -58,7 +59,7 @@ func (ac GroupServerCli) GetRsmGrouplist(ht utils.CHttpClientEx) (*[]proto.Group
 		utils.LogErrorf("coinType :%s,ht.RequestResponseJsonJson  status=%d,error=%d.%v url=%s ","coinType",statusCode,errorCode,err,ac.url)
 		sttError :=fmt.Sprintf("GetReqtoGroupServer{Error=%d,Desc=%v}",errorCode,err)
 		fmt.Printf("in GetRsmGrouplist(),sttError is:",sttError)
-		return nil,err
+		return &atteInfo,err
 	}
 	utils.LogInfof("ac.url :%s,GetRsmGrouplist() res=%v",ac.url,atteInfo)
 	/*
@@ -105,5 +106,5 @@ func (ac GroupServerCli) GetRsmGrouplist(ht utils.CHttpClientEx) (*[]proto.Group
 	for _, RsmInfo := range atteInfo.GroupItems{
 		log.Info("check001 in GetRsmGrouplist(),cur RsmInfo is:%s,Clients list is:%v",RsmInfo.RmsId,RsmInfo.Clients)
 	}
-	return &atteInfo.GroupItems, nil
+	return &atteInfo, nil
 }

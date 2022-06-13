@@ -68,9 +68,10 @@ func main() {
 	//192.168.1.114
 	//http://10.200.1.89:5000/rsm/groups
 	//cururl := "http://10.200.1.24:5000"
-	cururl := gbConf.GroupServerUrl
-	fmt.Println("GroupServerUrl is :%s", cururl)
-	cli := trust.NewRSMServerCli(cururl)
+	groupserverurl := gbConf.GroupServerUrl
+	requestInterval :=gbConf.RequestInterval
+	fmt.Println("get from config.json.GroupServerUrl is :%s,requestInterval is:%d", groupserverurl,requestInterval)
+	cli := trust.NewRSMServerCli(groupserverurl)
 	//127.0.0.1:8999
 	GroupAttachRSMMap, err := cli.GetRsmGrouplist(ht)
 	fmt.Println("after GetRsmGrouplist(),get grouprsmMap is :%v,err is:%v", GroupAttachRSMMap,err)
@@ -105,10 +106,10 @@ func main() {
 	router :=mux.NewRouter().StrictSlash(true)
 	//router.HandleFunc("/remote/GetTestCoinTx", handle.RemoteSignSendTransaction)
 	//0601add
-	handle.StartVoteServer()
+	handle.StartVoteServer(groupserverurl,requestInterval)
 	router.HandleFunc("/remote/AddValidator", handle.AddValidatorNodeHandler)
 
-	router.HandleFunc("/remote/ClientVoteRSM", handle.ReceiveClientVoteHandler)
+	router.HandleFunc("/remote/ClientVoteRSM", handle.AddClientVoteRSMHandle)
 
 	err =http.ListenAndServe(strHost, router)
 	if nil!=err {

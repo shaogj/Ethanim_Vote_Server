@@ -238,16 +238,29 @@ func  Success(status ErrorInfo ) bool {
 //20220527add
 
 //client分组周期内对rsm的检测投票msg
+/*
 type ClientVoteReq struct{
-	//ClientId string			`json:"client_id"`
-	ClientAddress string	`json:"client_address"`
-	RsmGroupId string		`json:"rsm_group_id"`
+	ClientId string
+	//ClientAddress string	`json:"client_address"`
+	RsmGroupId int
+	Rsmid string
+	VertifyResult bool
+	//投票时间
+	VoteTime int64
+	ClientSignStr string
+}
+*/
+type ClientVoteReq struct{
+	ClientId string			`json:"client_id"`
+	//ClientAddress string	`json:"client_address"`
+	RsmGroupId int		`json:"rsm_group_id"`
 	Rsmid string			`json:"rms_id"`
 	VertifyResult bool		`json:"vertify_result"`
 	//投票时间
 	VoteTime int64			`json:"vote_time"`
 	ClientSignStr string	`json:"client_sign_str"`
 }
+
 
 type ClientVoteResq struct {
 	ReturnInfo
@@ -269,11 +282,10 @@ type RsmServerGroupResq struct{
 	Startime int64	`json:"start_time"`
 	Endtime int64	`json:"end_time"`
 	RsmCount	string	`json:"group_count"`
-	RSMGrouList [][]interface{}	`json:"groupsbef"`
 	//0606add
 	GroupAttach interface{} `json:"groups002"` // 协议数据
 	GroupItems	[]GroupItems  `json:"groups"`
-	RsmGroupId	string	`json:"rsm_group_id"`
+	RsmGroupId	int	`json:"group_id"`
 
 	//map[Rsmnode][]string
 	ServerSignStr string
@@ -293,7 +305,7 @@ type GroupItems struct{
 
 type RsmNode struct{
 	RsmId 	string
-	GroupId	string
+	GroupId	int//string
 }
 //handle用，实时从server端接收分组RSM的消息
 type RsmServerGroupInfo struct{
@@ -313,7 +325,7 @@ type RSMVoteGroupMsgs struct{
 	VoteSeverId		string
 	SeverGroupId	int
 
-	ClientVote []ClientVoteResq
+	ClientVote []ClientVoteReq
 	ServerSignStr string
 	//map[rms]clientlist[]
 	//ClientID的投票结果
