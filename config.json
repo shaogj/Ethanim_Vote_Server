@@ -15,6 +15,13 @@
 	],
 	"group_server_url": "http://192.168.1.223:5000",
 	"request_interval": 40,
+	"MySqlConfig": {
+		"host": "192.168.1.99",
+		"user": "8lab",
+		"password": "8lab",
+		"port": 3306,
+		"dbname": "bsc_accounts"
+	},
 	"WebPort": 7200
 }
 
