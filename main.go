@@ -3,6 +3,7 @@ package main
 import (
 	"Ethanim_Vote_Server/config"
 	"Ethanim_Vote_Server/handle"
+	"Ethanim_Vote_Server/service"
 	"Ethanim_Vote_Server/trust"
 	"Ethanim_Vote_Server/utils"
 	"fmt"
@@ -101,7 +102,21 @@ func main() {
 	*/
 	//交易发送节点的配置
 	//ethclientrpc.ReqNodeUrl = gbConf.BSCNodeUrl
+	err =service.InitMysqlDB(gbConf.MySqlCfg)
+	if  nil!=err {
+		log.Error("cur InitMysqlDB() to conn err!,err is :%v",err)
+		//0117,,test to recover
+		//0614PM:
+		os.Exit(0)
+	}
 	fmt.Println("cur cfgparams: ReqNodeValidatorInfo is :%v", gbConf.BscAddrMapList)
+	//0614
+	ethaccount := "0xb42cb187D7738fA9c14dB86e0A25014D6c296bCd"
+	addrPrikey,err :=handle.GetAddrPrivkeyETH(ethaccount)
+	if  nil!=err {
+		log.Error("cur InitMysqlDB() to conn err!,err is :%v", err)
+	}
+	fmt.Println("cur ethaccount is:%s,get addrPrikey is :%s", ethaccount,addrPrikey)
 
 	router :=mux.NewRouter().StrictSlash(true)
 	//router.HandleFunc("/remote/GetTestCoinTx", handle.RemoteSignSendTransaction)

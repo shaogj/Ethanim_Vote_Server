@@ -258,7 +258,7 @@ type ClientVoteReq struct{
 	VertifyResult bool		`json:"vertify_result"`
 	//投票时间
 	VoteTime int64			`json:"vote_time"`
-	ClientSignStr string	`json:"client_sign_str"`
+	ClientSignstr string	`json:"client_signstr"`
 }
 
 

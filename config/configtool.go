@@ -209,9 +209,11 @@ func InitValidatorConfigInfo() error {
 type  ConfigTrustInfomation struct {
 	BscAddrMapList       []BscAddrMap `json:"bsc_pubkey_addr_maps"`
 	RequestTrustInterval int          `json:"request_token_key"`
+	MySqlCfg        MySqlConfig         `json:"MySqlConfig"`
 	WebPort	int				`json:"WebPort"`
 	GroupServerUrl	string `json:"group_server_url"`
 	RequestInterval int `json:"request_interval"`
+
 }
 
 type Libp2pAddrMap struct {

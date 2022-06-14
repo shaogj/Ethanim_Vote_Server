@@ -2,6 +2,7 @@ package handle
 
 import (
 	"Ethanim_Vote_Server/config"
+	"Ethanim_Vote_Server/service"
 	"Ethanim_Vote_Server/trust"
 	"Ethanim_Vote_Server/utils"
 
@@ -229,6 +230,13 @@ func AddClientVoteRSMHandle(w http.ResponseWriter, r *http.Request) {
 	getresq :=transproto.ClientVoteResq{}
 	getresq.ResultCode = 0
 	getresq.ResultMsg = "invoke check good!"
+	//0614add
+	err := service.ClientVoteRecordSave(service.GXormMysql,jReq.ClientId,jReq.Rsmid,jReq.RsmGroupId,jReq.ClientSignstr,true)
+	if err != nil {
+		log.Error("ClientVoteRecordSave(),Insert row is failed! err is-:%v \n",err)
+	//return err
+
+	}
 	/*
 	totalBSCTMPubkeyPair := config.GbTrustConf.BscAddrMapList
 
@@ -310,6 +318,27 @@ func NewVoteServer(curinfo *VoteServerConfig) *VoteServer {
 }
 
 //to insert value
+//0613，get mysql data:
+
+//获取ETH的地址的私钥
+func GetAddrPrivkeyETH(curaddress string) (addrPrikey string,err error){
+
+	//engineread:= ETH_MOrmEngine
+	engineread:= service.GXormMysql
+	//get address 's [privkey]
+	selectsql := "select * from bsc_account_key where address = '"  + curaddress + "'"
+	addr_accountinfo, err := engineread.Query(selectsql)
+	if err != nil || len(addr_accountinfo) <= 0{
+		log.Error("when GetAddrPrivkeyETH(),curaddress' is:%s ,get privkey error: %v", curaddress,err)
+		return "",err
+	}
+
+	curaddrprivkey := string(addr_accountinfo[0]["priv_key"])
+	log.Info("when GetAddrPrivkeyETH(),curaddress is :%s,get addr's privkey succ ,info is: %v", curaddress,curaddrprivkey)
+	return curaddrprivkey,nil
+}
+
+
 //0613
 func (this *VoteServer) CollectGroupVoteInfo(curclientvoteinfo transproto.ClientVoteReq) {
 	//this.RMSGroupVotes = this.RMSGroupVotes
