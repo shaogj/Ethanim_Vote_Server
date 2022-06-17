@@ -304,8 +304,8 @@ type GroupItems struct{
 //ServerGroup map[int]map[transproto.Rsmnode][]string
 
 type RsmNode struct{
-	RsmId 	string
 	GroupId	int//string
+	RsmId 	string
 }
 //handle用，实时从server端接收分组RSM的消息
 type RsmServerGroupInfo struct{
@@ -329,7 +329,7 @@ type RSMVoteGroupMsgs struct{
 	ServerSignStr string
 	//map[rms]clientlist[]
 	//ClientID的投票结果
-	ClientVertifyMap map[string][]bool
+	//ClientVertifyMap map[string][]bool
 	GatherTrustCount int
 	GatherVertifyResult bool
 }

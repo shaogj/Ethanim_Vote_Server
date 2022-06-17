@@ -33,17 +33,23 @@ func SetupNodeServer(webPort int) {
 }
 
 func main() {
-	fmt.Println("sss444!!")
-	curtime := time.Now()
-	///curtime.Before()
-	//todo,时间戳比较；
-	fmt.Println("curtime is:%v",curtime)
+
 	strHostPort3 :=  4422//3333
 	//0607testing
 	//return
 	//end 0607
 	//0217ad
 	fmt.Println("strHost0011 is :%s", strHostPort3)
+	//0616testing:
+	curmin := time.Now().Minute()
+	newcyclestart, newcycleend := service.GetDayTodayLastMinute(time.Now().Unix(), curmin)
+	fmt.Println("cur curmin is:%d,GetDayTodayLastMinute() newcyclestart is :%s,newcycleend is:%s", curmin,newcyclestart,newcycleend)
+	var nowtime int64 = time.Now().Unix()
+	var strtime string = time.Unix(nowtime, 0).Format("2006-01-02 15:04:05")
+	fmt.Println("cur time is :%d, strtime is :%s",nowtime, strtime)
+
+
+	//return
 	SetupNodeServer(strHostPort3)
 
 	if err := config.InitWithProviders("multifile/console","./logs"); err != nil {
@@ -74,32 +80,9 @@ func main() {
 	fmt.Println("get from config.json.GroupServerUrl is :%s,requestInterval is:%d", groupserverurl,requestInterval)
 	cli := trust.NewRSMServerCli(groupserverurl)
 	//127.0.0.1:8999
-	GroupAttachRSMMap, err := cli.GetRsmGrouplist(ht)
-	fmt.Println("after GetRsmGrouplist(),get grouprsmMap is :%v,err is:%v", GroupAttachRSMMap,err)
+	GroupAttachRSMMap,startime, err := cli.GetRsmGrouplist(ht)
+	fmt.Println("after GetRsmGrouplist(),startime is:%d,get grouprsmMap is :%v,err is:%v", startime,GroupAttachRSMMap,err)
 
-	/*
-	//0507addfor ipmap
-	err = config.InitLibp2pAddrMapInfo()
-	if  nil!=err {
-		fmt.Println("from libp2p_netaddr_map.json.json,get json conf err!")
-		log.Error("from libp2p_netaddr_map.json.json,get json conf err!")
-		os.Exit(0)
-	}
-	gbConfIpMap := &config.GbPeerIPMap
-	var ConfigPeerMapIP = make(map[string]string)
-	xsrcmap := map[string]string{"192.168.77/10011": "111.153", "192.168.44/10022":"222.444"}
-	for _,Libp2pAddrItem := range gbConfIpMap.Libp2pAddrMapList{
-		nodePeerFoundAddr :=fmt.Sprintf("/ip4/%s/tcp/%d",Libp2pAddrItem.OuterNetAddr,Libp2pAddrItem.Libp2pListenPort)
-		//fmt.Printf("check cur i:%d,Libp2pAddrItem info is %s,get nodePeerFoundAddr is:%s\n",i,Libp2pAddrItem,nodePeerFoundAddr)
-		ConfigPeerMapIP[nodePeerFoundAddr] = Libp2pAddrItem.InneNetAddr
-	}
-	//for i,xsrcmapitem := range xsrcmap {
-	for peerOuterAddr,addrItem := range ConfigPeerMapIP {
-		fmt.Printf("checklibp2p--get addrItem conf peerouteraddr:is %s,inneraddr is:%s\n",peerOuterAddr,addrItem)
-		xsrcmap[peerOuterAddr] = addrItem
-	}
-	fmt.Printf("checklibp2p--get xsrcmap map len is:%d,xsrcmap info:is %v\n",len(xsrcmap),xsrcmap)
-	*/
 	//交易发送节点的配置
 	//ethclientrpc.ReqNodeUrl = gbConf.BSCNodeUrl
 	err =service.InitMysqlDB(gbConf.MySqlCfg)
@@ -107,17 +90,20 @@ func main() {
 		log.Error("cur InitMysqlDB() to conn err!,err is :%v",err)
 		//0117,,test to recover
 		//0614PM:
-		os.Exit(0)
+		//os.Exit(0)
 	}
 	fmt.Println("cur cfgparams: ReqNodeValidatorInfo is :%v", gbConf.BscAddrMapList)
-	//0614
+	//0616,trying
+	/*
 	ethaccount := "0xb42cb187D7738fA9c14dB86e0A25014D6c296bCd"
+
 	addrPrikey,err :=handle.GetAddrPrivkeyETH(ethaccount)
 	if  nil!=err {
 		log.Error("cur InitMysqlDB() to conn err!,err is :%v", err)
 	}
-	fmt.Println("cur ethaccount is:%s,get addrPrikey is :%s", ethaccount,addrPrikey)
 
+	fmt.Println("cur ethaccount is:%s,get addrPrikey is :%s", ethaccount,addrPrikey)
+	*/
 	router :=mux.NewRouter().StrictSlash(true)
 	//router.HandleFunc("/remote/GetTestCoinTx", handle.RemoteSignSendTransaction)
 	//0601add

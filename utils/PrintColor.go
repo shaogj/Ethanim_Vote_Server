@@ -57,7 +57,7 @@ func LogWarnf(format string, v ...interface{}) {
 }
 func LogInfof(format string, v ...interface{}) {
 	log.Output(2, fmt.Sprintf(PFCLR_L_GREEN+"--INFO-- "+format+PFCLR_NONE+"\n", v...))
-	logmki.Printf(2, logmki.LvINFO, format,v...)
+	//logmki.Printf(2, logmki.LvINFO, format,v...)
 }
 func LogDepthInfof(depth int,format string, v ...interface{}) {
 	log.Output(2+depth, fmt.Sprintf(PFCLR_L_GREEN+"--INFO-- "+format+PFCLR_NONE+"\n", v...))

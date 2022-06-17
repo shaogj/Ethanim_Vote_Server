@@ -43,68 +43,27 @@ func NewRSMServerCli(urlStr string) *GroupServerCli {
 }
 
 //*[]proto.GroupItems,
-func (ac GroupServerCli) GetRsmGrouplist(ht utils.CHttpClientEx) (servergroupresq *proto.RsmServerGroupResq ,err error) {
+func (ac GroupServerCli) GetRsmGrouplist(ht utils.CHttpClientEx) (servergroupresq *proto.RsmServerGroupResq ,startime int64,err error) {
 	//0607add
 	//ht:=utils.CHttpClientEx{}
 	//ht.Init()
 	ht.HeaderSet("Content-Type", "text/json")
 
-	//atteInfo := attestInformation{}
 	atteInfo := proto.RsmServerGroupResq{}
-	//groupsinfo :=proto.GroupAttachRSM{}
 	//atteInfo.GroupAttach = &groupsinfo
 	reqServerInfo :=  proto.RsmServerGroupReq{}
-	_,statusCode,errorCode,err:=ht.RequestJsonResponseJson(ac.url,5000,&reqServerInfo,&atteInfo)
+	_,statusCode,errorCode,err:=ht.RequestJsonResponseJson(ac.url,3000,&reqServerInfo,&atteInfo)
 	if nil!=err {
 		utils.LogErrorf("coinType :%s,ht.RequestResponseJsonJson  status=%d,error=%d.%v url=%s ","coinType",statusCode,errorCode,err,ac.url)
 		sttError :=fmt.Sprintf("GetReqtoGroupServer{Error=%d,Desc=%v}",errorCode,err)
 		fmt.Printf("in GetRsmGrouplist(),sttError is:",sttError)
-		return &atteInfo,err
+		return &atteInfo,0,err
 	}
 	utils.LogInfof("ac.url :%s,GetRsmGrouplist() res=%v",ac.url,atteInfo)
-	/*
-	resp, err := ac.cli.Get(ac.url)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	respBytes, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	resStr := string(respBytes)
-	rankStr := strings.ReplaceAll(resStr, "'", "\"")
-	err = json.Unmarshal([]byte(rankStr), &atteInfo)
-	if err != nil {
-		err = fmt.Errorf("cannot parse data on attestInformation[%s] from %s,%v", resStr, ac.url, err)
-		return nil, err
-	}
-	ret := attestInformation{}
-	//err = json.Unmarshal(respBytes, &ret)
-	//Fix bug for strconv.Atoi err as nodeInfo[0] turn to "1.072842e+06
-	d := json.NewDecoder(strings.NewReader(string(respBytes)))
-	d.UseNumber()
-	err = d.Decode(&ret)
-	if err != nil {
-		return nil, err
-	}
-	var trustData []TrustNodes
-	*/
 
-	/*for _, nodeInfo := range ret.Ranking {
-		score, err := strconv.Atoi(fmt.Sprintf("%s", nodeInfo[0]))
-		if err != nil {
-			return nil, err
-		}
-		trustData = append(trustData, TrustNodes{
-			Score: int64(score),
-			IP:    fmt.Sprintf("%v", nodeInfo[1]),
-		})
 
-	}
-	*/
 	for _, RsmInfo := range atteInfo.GroupItems{
 		log.Info("check001 in GetRsmGrouplist(),cur RsmInfo is:%s,Clients list is:%v",RsmInfo.RmsId,RsmInfo.Clients)
 	}
-	return &atteInfo, nil
+	return &atteInfo, atteInfo.Startime,nil
 }

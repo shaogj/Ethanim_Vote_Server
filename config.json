@@ -14,7 +14,7 @@
 		}
 	],
 	"group_server_url": "http://192.168.1.223:5000",
-	"request_interval": 40,
+	"request_interval": 10,
 	"MySqlConfig": {
 		"host": "192.168.1.99",
 		"user": "8lab",

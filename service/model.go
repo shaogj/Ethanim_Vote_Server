@@ -76,3 +76,18 @@ func  ClientVoteRecordSave(curengine *xorm.Engine,clientId string,rmsid string,r
 	return nil
 }
 
+
+//当前时间上一个分组起止时间戳
+func GetDayTodayLastMinute(timestamp int64, Minutes int) (start int64, end int64) {
+	tm := time.Unix(timestamp, 0)
+	str := tm.Format("20060102")
+
+	t, _ := time.Parse("20060102", str)
+	t = t.Add((-time.Hour * 8))
+	//上一个小时区间
+	newstart := time.Unix(t.Unix(), 0).Add(time.Minute * time.Duration(Minutes-1)).Unix()      // hours: - now.hours
+	end = t.Add(time.Minute*time.Duration(Minutes-1) + time.Second*59).Unix() // Minutes: now().59:59
+	//return t.Unix(), end
+	return newstart, end
+}
+
