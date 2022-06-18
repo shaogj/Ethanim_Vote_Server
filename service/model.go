@@ -54,15 +54,14 @@ func GenerateAccount(curengine *xorm.Engine,cointype string,privkey string,pubke
 	return nil
 }
 
-//1028,for wdc
-func  ClientVoteRecordSave(curengine *xorm.Engine,clientId string,rmsid string,rsmgroupid int,clientsignstr string,VertifyResult bool ) error {
+func  ClientVoteRecordSave(curengine *xorm.Engine,clientId string,rmsid string,rsmgroupid int,clientsignstr string,votetime int64,VertifyResult bool ) error {
 	curClientVote := &models.ClientVoteRsmRecord{
 		Clientid: clientId,
 		RsmId:rmsid,
 		RsmGroupId:rsmgroupid,
 		ClientSignstr:clientsignstr,
 		VertifyResult:VertifyResult,
-		VoteTime:time.Now().Unix(),
+		VoteTime:votetime,
 		TimeCreate:time.Now().Unix(),
 	}
 	////time.Now().Unix()
@@ -72,7 +71,30 @@ func  ClientVoteRecordSave(curengine *xorm.Engine,clientId string,rmsid string,r
 		return err
 
 	}
-	log.Info("ClientVoteRecordSave(),Insert row success!,rec is :%v,rowsnum is:%d \n", curClientVote,rows)
+	//log.Info("ClientVoteRecordSave(),Insert row success!,rec is :%v,rowsnum is:%d \n", curClientVote,rows)
+	return nil
+}
+
+func  InsertGroupRSMVotes(curengine *xorm.Engine,groupId int,rmsid string,vertifyresult int,minorityIds,majorityIds string) error {
+	curUserVoteRsm := &models.WalletUserPolls{
+		MiningGroupId: groupId,
+		AssociatedRsm:	rmsid,
+		BlockNums:4,
+		FinalResults:	vertifyresult,
+		MinorityIds:minorityIds,
+		MajorityIds:majorityIds,
+		CreateTime:time.Now(),
+		UpdateTime:time.Now(),
+	}
+
+	////time.Now().Unix()
+	rows, err := curengine.Table(models.TableWalletUserPollsRecord).Insert(curUserVoteRsm)
+	if err != nil {
+		log.Error("InsertGroupRSMVotes(),Insert row is :%v,rowsnum is:%d,err is-:%v \n", curUserVoteRsm,rows,err)
+		return err
+
+	}
+	log.Info("InsertGroupRSMVotes(),Insert row success!,rec is :%v,rowsnum is:%d \n", curUserVoteRsm,rows)
 	return nil
 }
 

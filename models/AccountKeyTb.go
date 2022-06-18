@@ -1,14 +1,12 @@
 
 package models
+
+import "time"
+
 var (
-	//账户信息表 wdc表存放keystore对应的字段值表
-	TableBTCAccount="gjc_account_key_tb"
-	TableCoinPrivateKey= "coin_private_key"
-	TableGGEXTranRecord="ggex_tran_state"
-	//0116add
-	TableBTCTranRecord="btc_tran_state"
 	//0614
 	TableClientVoteRecord="client_vote_rsm_record"
+	TableWalletUserPollsRecord="wallet_user_polls"
 
 
 )
@@ -42,7 +40,7 @@ CREATE TABLE `client_vote_rsm_record` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `clientid` varchar(120) DEFAULT NULL COMMENT 'clientid',
   `rsm_group_id` bigint(20) NOT NULL COMMENT '分组ID',
-  `rsmid` varchar(40) DEFAULT NULL COMMENT 'rsmid',
+  `rsm_id` varchar(60) DEFAULT NULL COMMENT 'rsmid',
   `vertify_result` varchar(4) DEFAULT NULL COMMENT '验证结果',
   `client_signstr` varchar(200) NOT NULL COMMENT '客户签名',
   `vote_time` bigint(20) NOT NULL COMMENT '投票时间',
@@ -57,7 +55,7 @@ type ClientVoteRsmRecord struct {
 	Id         int       `xorm:"not null pk autoincr comment('ID') INT(11)"`
 	Clientid   string    `xorm:"unique(clientid) CHAR(120)"`
 	RsmGroupId     int       `xorm:"INT(15)"`
-	RsmId   string    `xorm:"comment('币种类型') CHAR(40)"`
+	RsmId   string    `xorm:"comment('币种类型') CHAR(60)"`
 	VertifyResult     bool       `xorm:"INT(4)"`
 	//Address    string    `xorm:"comment('账户公钥hash地址') unique(address) VARCHAR(200)"`
 	//Status     int       `xorm:"INT(11)"`
@@ -66,22 +64,32 @@ type ClientVoteRsmRecord struct {
 	TimeCreate   int64  `json:"created_time" xorm:"BIGINT(20)"`
 
 }
-
-type WdcTranRecord struct {
-	Settleid       int64    `json:"orderid" `
-	Txhash        string `json:"txhash" xorm:"default ''"`
-	From        string `json:"from" xorm:"default ''"`
-	To		 	string `json:"to" xorm:"default ''"`
-	Amount  	float64 `json:"amount"`
-	Amountfee  	float64 `json:"amountfee"`
-	Coincode string    `json:"cointype" xorm:"default ''"` //交易币种类
-	Status        string `json:"status" xorm:"default ''"`
-
-	Verifystatus int    `json:"verifystatus" xorm:"default 0 index INT(4)"` //交易审核状态
-	Errcode       int64    `json:"errorid" `
-	Desc	       string `json:"desc" xorm:"default ''"`
-	//改为varchar类型在mysql里；
-	TimeCreate	   string  `json:"time_create" `
-	TimeUpdate	   string  `json:"time_update" `
-	Raw   string  `json:"raw" `
+type WalletUserPolls struct {
+	Id         int       		`xorm:"not null pk autoincr comment('ID') INT(11)"`
+	MiningGroupId     int   	`xorm:"comment('挖矿分组ID') INT(15)"`
+	BlockNums     int      		`xorm:"comment('1个混洗周期所产生的区块数量') INT(15)"`
+	AssociatedRsm   string    	`xorm:"unique(associated_rsm) CHAR(60)"`
+	FinalResults     int       `xorm:"comment('rsm验证结果:1-可信 0-不可信') INT(4)"`
+	Status     int       		`xorm:"comment('0-奖励待发放 1-奖励已发放') TINYINT(3)"`
+	MinorityIds     string    `xorm:"comment('验证的人数少的客户端ID') VARCHAR(200)"`
+	MajorityIds     string    `xorm:"comment('验证的人数多的客户端ID') VARCHAR(200)"`
+	CreateTime     time.Time `xorm:"comment('创建时间') VARCHAR(200)"`
+	UpdateTime     time.Time  `xorm:"comment('更新时间') VARCHAR(200)"`
 }
+//0614add
+/*
+CREATE TABLE `wallet_user_polls` (
+    `id` integer AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    `mining_group_id` integer COMMENT '挖矿分组ID',
+    `block_nums` integer COMMENT '1个混洗周期所产生的区块数量',
+    `associated_rsm` integer COMMENT '关联RSM',
+    `final_results` integer COMMENT 'rsm验证结果', # 1-可信 0-不可信
+    `status` TINYINT(3) NOT NULL DEFAULT 0 COMMENT '状态', # 0-奖励待发放 1-奖励已发放
+    `minority_ids` text COMMENT '验证的人数少的客户端ID',
+    `majority_ids` text COMMENT '验证的人数多的客户端ID',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY `idx_group_associated_rsm_tx` (`mining_group_id`, `associated_rsm`)
+) ENGINE=InnoDB AUTO_INCREMENT=100000 DEFAULT CHARSET=utf8 COMMENT='wallet user polls';
+*/
+//mining_group_id，associated_rsm，final_results，minority_ids （json（[ids]））, majority_ids

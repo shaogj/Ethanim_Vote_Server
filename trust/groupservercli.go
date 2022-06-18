@@ -4,7 +4,6 @@ import (
 	"Ethanim_Vote_Server/proto"
 	"Ethanim_Vote_Server/utils"
 	"fmt"
-	"github.com/mkideal/log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -61,9 +60,10 @@ func (ac GroupServerCli) GetRsmGrouplist(ht utils.CHttpClientEx) (servergroupres
 	}
 	utils.LogInfof("ac.url :%s,GetRsmGrouplist() res=%v",ac.url,atteInfo)
 
-
+	/*
 	for _, RsmInfo := range atteInfo.GroupItems{
 		log.Info("check001 in GetRsmGrouplist(),cur RsmInfo is:%s,Clients list is:%v",RsmInfo.RmsId,RsmInfo.Clients)
 	}
+	*/
 	return &atteInfo, atteInfo.Startime,nil
 }

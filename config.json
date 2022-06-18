@@ -13,14 +13,14 @@
 
 		}
 	],
-	"group_server_url": "http://192.168.1.223:5000",
-	"request_interval": 10,
+	"group_server_url": "http://101.251.211.201:21635",
+	"request_interval": 30,
 	"MySqlConfig": {
-		"host": "192.168.1.99",
+		"host": "101.251.211.200",
 		"user": "8lab",
 		"password": "8lab",
 		"port": 3306,
-		"dbname": "bsc_accounts"
+		"dbname": "ethanim_rsm"
 	},
 	"WebPort": 7200
 }

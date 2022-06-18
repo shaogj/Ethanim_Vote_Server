@@ -329,7 +329,7 @@ type RSMVoteGroupMsgs struct{
 	ServerSignStr string
 	//map[rms]clientlist[]
 	//ClientID的投票结果
-	//ClientVertifyMap map[string][]bool
+	ClientVertifyMap map[string]bool
 	GatherTrustCount int
 	GatherVertifyResult bool
 }
