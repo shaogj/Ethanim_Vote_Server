@@ -121,9 +121,6 @@ type AddValidatorNodeResp struct {
 	TotalBSCTMPubkeyPair []config.BscAddrMap	 `json:"bscTMPubkeyPairs"`
 	PubkeyNum int	`json:"pubkeyNum"`
 }
-//0217doing end
-
-//2022.0613add
 type ClientVoteReq struct{
 	ClientId string
 	//ClientAddress string	`json:"client_address"`
@@ -178,16 +175,10 @@ func AddClientVoteRSMHandle(w http.ResponseWriter, r *http.Request) {
 	err := service.ClientVoteRecordSave(service.GXormMysql,jReq.ClientId,jReq.Rsmid,jReq.RsmGroupId,jReq.ClientSignstr,jReq.VoteTime,true)
 	if err != nil {
 		log.Error("ClientVoteRecordSave(),Insert row is failed! err is-:%v \n",err)
-	//return err
+		//return err
 
 	}
-	/*
-	totalBSCTMPubkeyPair := config.GbTrustConf.BscAddrMapList
 
-	curAddValidatorNodeResp := AddValidatorNodeResp{}
-	curAddValidatorNodeResp.TotalBSCTMPubkeyPair = totalBSCTMPubkeyPair
-	curAddValidatorNodeResp.PubkeyNum = len(totalBSCTMPubkeyPair)
-	*/
 	GeneJsonResultFin(w, r, getresq, 200, "调用成功pp")
 
 }
@@ -210,7 +201,10 @@ type VoteServer struct {
 
 	//收集每个groupID中，client对rms投票的msg
 	RMSGroupVotes	map[int]transproto.RSMVoteGroupMsgs
-	ClientVoteMsgQueue	chan ClientVoteReq
+	//0617upgrade
+	RMSGroupVotesSubRsm	map[int]map[string]transproto.RSMVoteGroupMsgs
+
+	ClientVoteMsgQueue	chan *ClientVoteReq
 	qtChan             chan struct{}
 
 
@@ -256,35 +250,29 @@ func NewVoteServer(curinfo *VoteServerConfig) *VoteServer {
 	curVoteServer.VoteConfigParams = curinfo
 	curVoteServer.ServerGroup = make(map[transproto.RsmNode][]ClientRSMInfo,0)
 	curVoteServer.RMSGroupVotes = make(map[int]transproto.RSMVoteGroupMsgs)
-	curVoteServer.ClientVoteMsgQueue = make(chan ClientVoteReq,100)
+	//0617,,enhance to replace above map
+	curVoteServer.RMSGroupVotesSubRsm = make(map[int]map[string]transproto.RSMVoteGroupMsgs)
+
+	curVoteServer.ClientVoteMsgQueue = make(chan *ClientVoteReq,100)
 	curVoteServer.qtChan = make(chan struct{})
 
 	return curVoteServer
 
 }
+func (this *VoteServer) RecvClientVoteMsg(curClientVoteReq *ClientVoteReq) error {
+	this.ClientVoteMsgQueue <- curClientVoteReq
+	log.Info("cur RecvClientVote() to queue,client votemsg  is:%v", curClientVoteReq)
+	return nil
+}
+
 
 //to insert value
 //0613，get mysql data:
 
-//获取ETH的地址的私钥
-func GetAddrPrivkeyETH(curaddress string) (addrPrikey string,err error){
-
-	//engineread:= ETH_MOrmEngine
-	engineread:= service.GXormMysql
-	//get address 's [privkey]
-	selectsql := "select * from bsc_account_key where address = '"  + curaddress + "'"
-	addr_accountinfo, err := engineread.Query(selectsql)
-	if err != nil || len(addr_accountinfo) <= 0{
-		log.Error("when GetAddrPrivkeyETH(),curaddress' is:%s ,get privkey error: %v", curaddress,err)
-		return "",err
-	}
-
-	curaddrprivkey := string(addr_accountinfo[0]["priv_key"])
-	log.Info("when GetAddrPrivkeyETH(),curaddress is :%s,get addr's privkey succ ,info is: %v", curaddress,curaddrprivkey)
-	return curaddrprivkey,nil
+type MajorityIds struct {
+	GroupId	int  `json:"group_id"`
+	ClientId []string `json:"majority_ids"`
 }
-
-
 //0613,处理周期的分组结果，set VertifyResult
 func (this *VoteServer) HandleGroupVotes(rsmGroupId int,rsmId string) error{
 
@@ -315,23 +303,35 @@ func (this *VoteServer) HandleGroupVotes(rsmGroupId int,rsmId string) error{
 	this.clientMsgRwlock.Unlock()
 	//todo,save votesrecord to db
 	dbVertifyResult :=0
-	var clientMinorityIds string
+	curMajorityIds := MajorityIds{GroupId:rsmGroupId}
+
 	if curservergroup.GatherVertifyResult == true {
 		dbVertifyResult =1
 	}
 	for clientitem,_ := range curservergroup.ClientVertifyMap {
-		clientMinorityIds += clientitem
+		//clientMinorityIds += clientitem
+		curMajorityIds.ClientId = append(curMajorityIds.ClientId,clientitem)
+	}
+	minorityIdsJson, err := json.Marshal(curMajorityIds)
+	if err != nil {
+		log.Error("cur rsmGroupId is :%d, curMajorityIds is:%s, Marshal err is:%v", rsmGroupId,curMajorityIds,err)
+		return err
 	}
 	log.Info("cur rsmGroupId is :%d, after HandleGroupVotes(),get votemsg info is:%v", rsmGroupId,curservergroup)
-	err := service.InsertGroupRSMVotes(service.GXormMysql,rsmGroupId,"01234",dbVertifyResult,"minorityIdslistsss",clientMinorityIds)
+	//0617add
+	curservergrouprsm := this.RMSGroupVotesSubRsm[rsmGroupId]
+	log.Info("cur rsmGroupId is :%d, after HandleGroupVotes(),cur RMSGroupVotesSubRsm info is:%v", rsmGroupId,curservergrouprsm)
+
+	err = service.InsertGroupRSMVotes(service.GXormMysql,rsmGroupId,rsmId,dbVertifyResult,"minorityIdslistsss",string(minorityIdsJson))//clientMinorityIds
 	if err != nil {
-		log.Error("ClientVoteRecordSave(),Insert row is failed! err is-:%v \n",err) //return err
+		log.Error("ClientVoteRecordSave(),Insert row is failed! err is-:%v \n",err)
+		return err
 	}
 	fmt.Printf("cur InsertGroupRSMVotes() Insert row finish!,groupId is :%v", rsmGroupId)
 
 	return nil
-
 }
+//归集分组rsmid的投票数据
 func (this *VoteServer) CollectGroupVoteInfo(curclientvoteinfo transproto.ClientVoteReq) {
 	//根据ServerGroup中的groupid时间，和rmsid；
 	//比较msg中的VoteTime，垃圾数据则扔掉
@@ -343,10 +343,9 @@ func (this *VoteServer) CollectGroupVoteInfo(curclientvoteinfo transproto.Client
 	key := transproto.RsmNode{GroupId: rsmGroupId,RsmId: rsmid}
 	curservergroup,ok := this.ServerGroup[key]
 	if !ok {
-		log.Info("In CollectGroupVoteInfo(), cur key is exist no in ServerGroup.key is:%v,recv clientmsg req info is:%v",key,curclientvoteinfo)
+		log.Error("In CollectGroupVoteInfo(), cur clientVoteReq's key is exist no in ServerGroup.key is:%v,recv clientmsg req info is:%v",key,curclientvoteinfo)
 
 	}else{
-		//curservergroup
 		log.Info("In CollectGroupVoteInfo(), cur ServerGroup' key is :%v,group's ClientRSMInfo list is:%v,recv clientmsg req info is:%v",key,"curservergroup",curclientvoteinfo)
 		for _,rsmgroupitem :=range curservergroup{
 			if rsmgroupitem.ClientID == curclientvoteinfo.ClientId {
@@ -356,8 +355,7 @@ func (this *VoteServer) CollectGroupVoteInfo(curclientvoteinfo transproto.Client
 				}
 			}
 		}
-		//非法的时间恶意投票，不处理
-		/**/
+		//非法时间的或恶意投票，不处理
 		if validtimestatus == false {
 			log.Error("In CollectGroupVoteInfo() judge validtimestatus is false, clientmsg is skipped.cur vote ClientId is:%v,votetime is:%v",curclientvoteinfo.ClientId,voteTime)
 			return
@@ -378,6 +376,10 @@ func (this *VoteServer) CollectGroupVoteInfo(curclientvoteinfo transproto.Client
 			this.RMSGroupVotes[rsmGroupId] = curRSMVoteGroupMsgs
 			this.clientMsgRwlock.Unlock()
 			log.Info("In CollectGroupVoteInfo(), cur key is:%v ,get clientmsg is new added to RMSGroupVotes",key)
+			//0617
+			this.RMSGroupVotesSubRsm[rsmGroupId] = make(map[string]transproto.RSMVoteGroupMsgs)
+			subrsmvotemsgs :=this.MakeVoteGroupMsg(rsmGroupId,rsmid,curclientvoteinfo)
+			log.Info("In CollectGroupVoteInfo(), cur key is:%v ,cur ClientVote info:%v",key,*subrsmvotemsgs)
 		}else{
 			//todo 去重clientid
 			if _,ok := getVoteGroupMsgs.ClientVertifyMap[curclientvoteinfo.ClientId];ok {
@@ -390,17 +392,39 @@ func (this *VoteServer) CollectGroupVoteInfo(curclientvoteinfo transproto.Client
 			this.clientMsgRwlock.Unlock()
 
 			log.Info("In CollectGroupVoteInfo(), cur key is:%v ,get clientmsg is added to RMSGroupVotes.cur ClientVote num is:%d",key,len(getVoteGroupMsgs.ClientVote))
-
+			//0617enhance
+			subrmsclientmsgs,ok :=this.RMSGroupVotesSubRsm[rsmGroupId][rsmid]
+			if !ok {
+				subrsmvotemsgs :=this.MakeVoteGroupMsg(rsmGroupId,rsmid,curclientvoteinfo)
+				log.Info("In CollectGroupVoteInfo(), cur key is:%v ,cur ClientVote info:%v",key,*subrsmvotemsgs)
+				//this.RMSGroupVotesSubRsm[rsmGroupId][rsmid] = getVoteGroupMsgs
+			}else{
+				if _,ok := subrmsclientmsgs.ClientVertifyMap[curclientvoteinfo.ClientId];ok {
+					log.Error("In CollectGroupVoteInfo(),sub group key is:%v, cur Client is repeat vote by RMSGroupVotes.cur ClientId is:%d",key,curclientvoteinfo.ClientId)
+					return
+				}
+				subrmsclientmsgs.ClientVote = append(subrmsclientmsgs.ClientVote,curclientvoteinfo)
+				this.RMSGroupVotesSubRsm[rsmGroupId][rsmid] = subrmsclientmsgs
+			}
 		}
 
 	}
 }
-
+func (this *VoteServer) MakeVoteGroupMsg(rsmgroupid int,rsmid string,curclientvoteinfo transproto.ClientVoteReq)(*transproto.RSMVoteGroupMsgs){
+	curRSMVoteGroupMsgs := transproto.RSMVoteGroupMsgs{}
+	curRSMVoteGroupMsgs.ClientVertifyMap = make(map[string]bool)
+	curRSMVoteGroupMsgs.SeverGroupId = rsmgroupid
+	curRSMVoteGroupMsgs.ServerSignStr ="subMakeVoteGroupMsgstrinfo"
+	//curRSMVoteGroupMsgs.ClientVertifyMap[curclientvoteinfo.ClientId] = true
+	curRSMVoteGroupMsgs.ClientVote = append(curRSMVoteGroupMsgs.ClientVote,curclientvoteinfo)
+	this.RMSGroupVotesSubRsm[rsmgroupid][rsmid] = curRSMVoteGroupMsgs
+	log.Info("In sub MakeVoteGroupMsg(), cur rsmgroupid is:%d, rsmid is:%s",rsmgroupid,rsmid)
+	return &curRSMVoteGroupMsgs
+}
 //transproto.RsmServerGroupResq
 func (this *VoteServer) AddRSMGroupList(servergroupresq *transproto.RsmServerGroupResq,curgroupinfo []transproto.GroupItems) {
 	var curClientRSMInfo ClientRSMInfo
 	for _, groupitem := range curgroupinfo {
-		//item.
 		rmsid := groupitem.RmsId
 		client := groupitem.Clients
 		key := transproto.RsmNode{GroupId: servergroupresq.RsmGroupId,RsmId: rmsid}
@@ -431,7 +455,6 @@ func (this *VoteServer) ReqGetRsmGrouplist() (groupid int,startime int64,err err
 	ht.Init()
 
 	cli := trust.NewRSMServerCli(this.VoteConfigParams.RSMServerUrl)
-	//127.0.0.1:8999
 	servergroupresq, startime,err := cli.GetRsmGrouplist(ht)
 	if servergroupresq == nil {
 		log.Error("get cli.GetRsmGrouplist() err!,get err is:%v",err)
@@ -476,15 +499,10 @@ func (this *VoteServer) Quit() {
 	this.qtChan <- struct{}{}
 }
 
-func (this *VoteServer) StartRequest() {
-	iserion :=0
+func (this *VoteServer) StartRequestRsmGroup() {
 	for {
-		//time.Sleep(time.Second * time.Duration(this.VoteConfigParams.RequestInterval))
-		fmt.Printf("cur In StartRequest()，invoke interval is:%d",this.VoteConfigParams.RequestInterval)
-		//step to 请求group server：请求应在每个节点出块流程commit后
-
-		//step to 请求可信节点列表
-		//getGroupInfo,err :=this.RequestRSMGroupInfo(this.VoteConfigParams.RSMServerUrl,this.VoteConfigParams.PublicKey)
+		log.Info("cur In StartRequestRsmGroup()，invoke interval is:%d",this.VoteConfigParams.RequestInterval)
+		//step to 请求可信RSM分组服务VoteConfigParams.PublicKey)
 		getGroupId,startime,err :=this.ReqGetRsmGrouplist()
 		if err != nil || startime ==0 {
 			log.Error(fmt.Sprintf("get ReqGetRsmGrouplist() err!,getGroupId is:%d,get err is:%v",getGroupId,err))
@@ -510,11 +528,6 @@ func (this *VoteServer) StartRequest() {
 		time.AfterFunc(waitTime, sendFunc2)
 		log.Info(fmt.Sprintf("succ Invoke cur RequestTrustInfo(),get total group num is :%d,cur Groupid is: %d,err is:%v",len(this.ServerGroup),getGroupId,err))
 
-		iserion ++
-		//this.clientMsgRwlock.Lock()
-		//11.25,返回的可信node列表，比现有的列表少，则设置不可信的节点score为-1，及为不可信的节点
-		//this.TrustNodeMap = trustnodeaddr
-		//this.clientMsgRwlock.Unlock()
 		time.Sleep(time.Second * time.Duration(this.VoteConfigParams.RequestInterval))
 
 	}
@@ -526,7 +539,7 @@ func  StartVoteServer(groupserverurl string,requestInterval int) *VoteServer{
 	crustConfig.RSMServerUrl = groupserverurl
 	crustConfig.RequestInterval = requestInterval
 	curVoteRsmTask:= NewVoteServer(crustConfig)
-	go curVoteRsmTask.StartRequest()
+	go curVoteRsmTask.StartRequestRsmGroup()
 	//go curVoteRsmTask.CalcRsmVotesProc(requestInterval)
 	fmt.Println("StartVoteServer is start!,,gbConf' gbTrustConf.crustConfig is %v", crustConfig)
 	G_VoteServer = curVoteRsmTask

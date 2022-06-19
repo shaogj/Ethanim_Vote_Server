@@ -43,9 +43,7 @@ func NewRSMServerCli(urlStr string) *GroupServerCli {
 
 //*[]proto.GroupItems,
 func (ac GroupServerCli) GetRsmGrouplist(ht utils.CHttpClientEx) (servergroupresq *proto.RsmServerGroupResq ,startime int64,err error) {
-	//0607add
-	//ht:=utils.CHttpClientEx{}
-	//ht.Init()
+
 	ht.HeaderSet("Content-Type", "text/json")
 
 	atteInfo := proto.RsmServerGroupResq{}
