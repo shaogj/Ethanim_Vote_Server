@@ -79,7 +79,7 @@ func  InsertGroupRSMVotes(curengine *xorm.Engine,groupId int,rmsid string,vertif
 	curUserVoteRsm := &models.WalletUserPolls{
 		MiningGroupId: groupId,
 		AssociatedRsm:	rmsid,
-		BlockNums:4,
+		BlockNums:1,
 		FinalResults:	vertifyresult,
 		MinorityIds:minorityIds,
 		MajorityIds:majorityIds,
