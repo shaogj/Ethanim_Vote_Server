@@ -48,7 +48,7 @@ func main() {
 		log.Error("cur InitMysqlDB() to conn err!,err is :%v",err)
 		//os.Exit(0)
 	}
-	//err = service.InsertGroupRSMVotes(service.GXormMysql,groupId,"Rsmid00234",1,"minorityIdslistsss","majorityIdslistss")
+	//err = service.InsertGroupRSMVotes(service.GXormMysql,334,"Rsmid00234",1,"minorityIdslistsss","majorityIdslistss","SlackVoteIds")
 	router :=mux.NewRouter().StrictSlash(true)
 	//0601add
 	handle.StartVoteServer(groupserverurl,requestInterval)

@@ -71,23 +71,29 @@ type WalletUserPolls struct {
 	AssociatedRsm   string    	`xorm:"unique(associated_rsm) CHAR(60)"`
 	FinalResults     int       `xorm:"comment('rsm验证结果:1-可信 0-不可信') INT(4)"`
 	Status     int       		`xorm:"comment('0-奖励待发放 1-奖励已发放') TINYINT(3)"`
-	MinorityIds     string    `xorm:"comment('验证的人数少的客户端ID') VARCHAR(200)"`
-	MajorityIds     string    `xorm:"comment('验证的人数多的客户端ID') VARCHAR(200)"`
+	TrustVoteIds     string    `xorm:"comment('验证RMS为true的客户端ID') VARCHAR(200)"`
+	UntrustVoteIds     string    `xorm:"comment('验证RMS为false的客户端ID') VARCHAR(200)"`
+	SlackVoteIds     string    `xorm:"comment('验证RMS为false的客户端ID') VARCHAR(200)"`
 	CreateTime     time.Time `xorm:"comment('创建时间') VARCHAR(200)"`
 	UpdateTime     time.Time  `xorm:"comment('更新时间') VARCHAR(200)"`
 }
 //0614add
 /*
+   `trust_vote_ids` text COMMENT 'trust vote ids',
+    `untrust_vote_ids` text COMMENT 'untrust vote ids',
+    `slack_vote_ids` text COMMENT 'slack vote ids',
+
 CREATE TABLE `wallet_user_polls` (
     `id` integer AUTO_INCREMENT NOT NULL PRIMARY KEY,
     `mining_group_id` integer COMMENT '挖矿分组ID',
     `block_nums` integer COMMENT '1个混洗周期所产生的区块数量',
-    `associated_rsm` integer COMMENT '关联RSM',
+    `associated_rsm` varchar(128) COMMENT '关联rsm',
     `final_results` integer COMMENT 'rsm验证结果', # 1-可信 0-不可信
     `status` TINYINT(3) NOT NULL DEFAULT 0 COMMENT '状态', # 0-奖励待发放 1-奖励已发放
-    `minority_ids` text COMMENT '验证的人数少的客户端ID',
-    `majority_ids` text COMMENT '验证的人数多的客户端ID',
-    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `trust_vote_ids` text COMMENT '验证RMS为true的客户端ID',
+    `untrust_vote_ids` text COMMENT '验证RMS为false的客户端ID',
+	`slack_vote_ids` text COMMENT '分组周期未验证的客户端ID',
+	`create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE KEY `idx_group_associated_rsm_tx` (`mining_group_id`, `associated_rsm`)
 ) ENGINE=InnoDB AUTO_INCREMENT=100000 DEFAULT CHARSET=utf8 COMMENT='wallet user polls';

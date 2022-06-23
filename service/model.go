@@ -75,14 +75,15 @@ func  ClientVoteRecordSave(curengine *xorm.Engine,clientId string,rmsid string,r
 	return nil
 }
 
-func  InsertGroupRSMVotes(curengine *xorm.Engine,groupId int,rmsid string,vertifyresult int,minorityIds,majorityIds string) error {
+func  InsertGroupRSMVotes(curengine *xorm.Engine,groupId int,rmsid string,vertifyresult int,trustvoteids,untrustvoteids string,slackvoteids string) error {
 	curUserVoteRsm := &models.WalletUserPolls{
 		MiningGroupId: groupId,
 		AssociatedRsm:	rmsid,
-		BlockNums:1,
+		BlockNums:		1,
 		FinalResults:	vertifyresult,
-		MinorityIds:minorityIds,
-		MajorityIds:majorityIds,
+		TrustVoteIds:	trustvoteids,
+		UntrustVoteIds:untrustvoteids,
+		SlackVoteIds:	slackvoteids,
 		CreateTime:time.Now(),
 		UpdateTime:time.Now(),
 	}

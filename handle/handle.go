@@ -161,7 +161,7 @@ func AddClientVoteRSMHandle(w http.ResponseWriter, r *http.Request) {
 		log.Error("fun=ReceiveClientVoteHandler() bef--,request=%v", jReq)
 		return
 	}
-	//接收client msg时间.tmp 手动 -10s
+	//for Testing :接收client msg时间.tmp 手动 -10s
 	jReq.VoteTime = time.Now().Unix() - 10
 	log.Info("fun=ReceiveClientVoteHandler() good,cur request=%v", jReq)
 	log.Info("cur to add ServerGroup map len is:%d",len(G_VoteServer.ServerGroup))
@@ -332,7 +332,7 @@ func (this *VoteServer) HandleGroupVotes(rsmGroupId int,rsmId string) error{
 		//to move add handle
 	}
 	//save votesrecord to db
-	err = service.InsertGroupRSMVotes(service.GXormMysql,rsmGroupId,rsmId,dbVertifyResult,"minorityIdslistsss",string(minorityIdsJson))//clientMinorityIds
+	err = service.InsertGroupRSMVotes(service.GXormMysql,rsmGroupId,rsmId,dbVertifyResult,"minorityIdslistsss",string(minorityIdsJson),"untrust_vote_idsinfo")//clientMinorityIds
 	if err != nil {
 		log.Error("ClientVoteRecordSave(),Insert row is failed! err is-:%v \n",err)
 		return err
@@ -398,16 +398,26 @@ func (this *VoteServer) HandleGroupRSMVotes(rsmGroupId int) error {
 			}
 		}
 		//未投票的clients记为0
+		var slack_vote_ids string = "["
 		for clientid,vertifystatus:= range rsmreqnoclients {
 			if vertifystatus == 0{
-				curMinorityIds.ClientId = append(curMinorityIds.ClientId,clientid)
+				//curMinorityIds.ClientId = append(curMinorityIds.ClientId,clientid)
+				if len(slack_vote_ids) < 2 {
+					slack_vote_ids = clientid
+				}else{
+					slack_vote_ids = fmt.Sprintf("%s,%s",slack_vote_ids,clientid)
+				}
 			}
 		}
-		majorityIdsJson, err := json.Marshal(curMajorityIds)
-		minorityIdsJson, err := json.Marshal(curMinorityIds)
+		slack_vote_ids = slack_vote_ids + "]"
+		log.Info("cur groupId is :%d,check slack_vote_ids is:%s", rsmGroupId,slack_vote_ids)
+
+		//0621
+		majorityIdsJson, err := json.Marshal(curMajorityIds.ClientId)
+		minorityIdsJson, err := json.Marshal(curMinorityIds.ClientId)
 
 		log.Info("cur rsmId is :%s, dbVertifyResult is:%d,after HandleGroupVotes(),get votemsg info is:%v,err is:%v", rsmid,dbVertifyResult,curgrouprsmvotes,err)
-		err = service.InsertGroupRSMVotes(service.GXormMysql,rsmGroupId,rsmid,dbVertifyResult,string(minorityIdsJson),string(majorityIdsJson))//clientMinorityIds
+		err = service.InsertGroupRSMVotes(service.GXormMysql,rsmGroupId,rsmid,dbVertifyResult,string(majorityIdsJson),string(minorityIdsJson),slack_vote_ids)//clientMinorityIds
 		if err != nil {
 			log.Error("ClientVoteRecordSave(),Insert row is failed! err is-:%v \n",err)
 		}
@@ -460,7 +470,7 @@ func (this *VoteServer) CollectGroupVoteInfo(curclientvoteinfo transproto.Client
 		}
 		//非法时间的或恶意投票，不处理
 		if validtimestatus == false {
-			log.Error("In CollectGroupVoteInfo() judge validtimestatus is false, clientmsg is skipped.cur vote ClientId is:%v,votetime is:%v",curclientvoteinfo.ClientId,voteTime)
+			log.Error("In CollectGroupVoteInfo() judge validtimestatus is false, clientmsg is skipped.cur rsmgroupid is:%d,vote ClientId is:%v,votetime is:%v",rsmGroupId,curclientvoteinfo.ClientId,voteTime)
 			return
 		}
 		//var curRSMVoteGroupMsgs  transproto.RSMVoteGroupMsgs
@@ -473,7 +483,6 @@ func (this *VoteServer) CollectGroupVoteInfo(curclientvoteinfo transproto.Client
 			curRSMVoteGroupMsgs.SeverGroupId = rsmGroupId
 			curRSMVoteGroupMsgs.ServerSignStr ="ServerSignSthttpsstrinfoeee"
 			log.Info("In sub RMSGroupVotes(), cur exist rsmGroupId is :%v ",rsmGroupId)
-			//curRSMVoteGroupMsgs.ClientVertifyMap[curclientvoteinfo.ClientId] = true
 			curRSMVoteGroupMsgs.ClientVote = append(curRSMVoteGroupMsgs.ClientVote,curclientvoteinfo)
 			this.clientMsgRwlock.Lock()
 			this.RMSGroupVotes[rsmGroupId] = curRSMVoteGroupMsgs
