@@ -183,7 +183,6 @@ func AddClientVoteRSMHandle(w http.ResponseWriter, r *http.Request) {
 
 }
 
-
 type VoteServerConfig struct {
 	RequestInterval int
 	PrivKey  	string
@@ -191,6 +190,7 @@ type VoteServerConfig struct {
 	RSMServerUrl string
 	TMNodeUrl string
 }
+
 //RSM周期服务分组的信息
 type VoteServer struct {
 	VoteConfigParams *VoteServerConfig
@@ -332,7 +332,7 @@ func (this *VoteServer) HandleGroupVotes(rsmGroupId int,rsmId string) error{
 		//to move add handle
 	}
 	//save votesrecord to db
-	err = service.InsertGroupRSMVotes(service.GXormMysql,rsmGroupId,rsmId,dbVertifyResult,"minorityIdslistsss",string(minorityIdsJson),"untrust_vote_idsinfo")//clientMinorityIds
+	err = service.InsertGroupRSMVotes(service.GXormMysql,rsmGroupId,rsmId,dbVertifyResult,"minorityIdslistsss",string(minorityIdsJson),"untrust_vote_idsinfo","333",4)//clientMinorityIds
 	if err != nil {
 		log.Error("ClientVoteRecordSave(),Insert row is failed! err is-:%v \n",err)
 		return err
@@ -417,11 +417,26 @@ func (this *VoteServer) HandleGroupRSMVotes(rsmGroupId int) error {
 		minorityIdsJson, err := json.Marshal(curMinorityIds.ClientId)
 
 		log.Info("cur rsmId is :%s, dbVertifyResult is:%d,after HandleGroupVotes(),get votemsg info is:%v,err is:%v", rsmid,dbVertifyResult,curgrouprsmvotes,err)
-		err = service.InsertGroupRSMVotes(service.GXormMysql,rsmGroupId,rsmid,dbVertifyResult,string(majorityIdsJson),string(minorityIdsJson),slack_vote_ids)//clientMinorityIds
+		curwalletuserrecord := service.GetGroupRSMVotesMsgs(rsmGroupId,rsmid,dbVertifyResult,string(majorityIdsJson),string(minorityIdsJson),slack_vote_ids)
+		//0630add
+		//调用节点RPC写入数据上链
+		curwalletuserrecordmsg, err := json.Marshal(*curwalletuserrecord)
+		getrandnumstr := RandStr(5)
+		fmt.Println("get randnumstr7777 is:%s",getrandnumstr)
+
+		sendrecordmsgs := "tx=%22" + string(curwalletuserrecordmsg) + getrandnumstr + "%22"
+		getblockInfo,getresq,err := SendRMSVoteMsgToNode(this.VoteConfigParams.TMNodeUrl,sendrecordmsgs)
+		if err != nil{
+			log.Error("cur after CommitRMSVoteMsg(),get error! ,getRespInfo is :%v,err is:%v",getblockInfo,err)
+		}
+		log.Info("cur CommitRMSVoteMsg(),get getresq hash is:%s,height is:%d",getresq.Hash,getresq.Height)
+
+		err = service.InsertGroupRSMVotes(service.GXormMysql,rsmGroupId,rsmid,dbVertifyResult,string(majorityIdsJson),string(minorityIdsJson),slack_vote_ids,string(getresq.Hash),getresq.Height)//clientMinorityIds
 		if err != nil {
 			log.Error("ClientVoteRecordSave(),Insert row is failed! err is-:%v \n",err)
 		}
 		log.Info("cur InsertGroupRSMVotes() Insert row finish!,groupId is :%v,rsmid is:%s", rsmGroupId,rsmid)
+
 
 	}
 	log.Info("cur groupid :%d in RMSGroupVotesSubRsm(),cur curservergrouprsm info is:%v",rsmGroupId,curservergrouprsm)
@@ -640,14 +655,15 @@ func (this *VoteServer) StartRequestRsmGroup() {
 }
 var G_VoteServer  *VoteServer
 
-func  StartVoteServer(groupserverurl string,requestInterval int) *VoteServer{
-	crustConfig :=DefaultVoteConfig()
-	crustConfig.RSMServerUrl = groupserverurl
-	crustConfig.RequestInterval = requestInterval
-	curVoteRsmTask:= NewVoteServer(crustConfig)
+func  StartVoteServer(groupserverurl string,requestInterval int,nodeUrl string) *VoteServer{
+	trustConfig :=DefaultVoteConfig()
+	trustConfig.RSMServerUrl = groupserverurl
+	trustConfig.RequestInterval = requestInterval
+	trustConfig.TMNodeUrl = nodeUrl
+	curVoteRsmTask:= NewVoteServer(trustConfig)
 	go curVoteRsmTask.StartRequestRsmGroup()
 	//go curVoteRsmTask.CalcRsmVotesProc(requestInterval)
-	fmt.Println("StartVoteServer is start!,,gbConf' gbTrustConf.crustConfig is %v", crustConfig)
+	fmt.Println("StartVoteServer is start!,,gbConf' gbTrustConf.trus;tConfig is %v", trustConfig)
 	G_VoteServer = curVoteRsmTask
 	return G_VoteServer
 }

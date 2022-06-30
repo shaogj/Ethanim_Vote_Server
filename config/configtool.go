@@ -213,7 +213,7 @@ type  ConfigTrustInfomation struct {
 	WebPort	int				`json:"WebPort"`
 	GroupServerUrl	string `json:"group_server_url"`
 	RequestInterval int `json:"request_interval"`
-
+	NodeUrl	string	`json:"NodeUrl"`
 }
 
 type Libp2pAddrMap struct {

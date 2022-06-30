@@ -76,6 +76,10 @@ type WalletUserPolls struct {
 	SlackVoteIds     string    `xorm:"comment('验证RMS为false的客户端ID') VARCHAR(200)"`
 	CreateTime     time.Time `xorm:"comment('创建时间') VARCHAR(200)"`
 	UpdateTime     time.Time  `xorm:"comment('更新时间') VARCHAR(200)"`
+	//add
+	TxHash     string    `xorm:"comment('txhash') VARCHAR(200)"`
+	BlockId     int64       `xorm:"comment('blockheight') TINYINT(15)"`
+
 }
 //0614add
 /*
@@ -99,3 +103,7 @@ CREATE TABLE `wallet_user_polls` (
 ) ENGINE=InnoDB AUTO_INCREMENT=100000 DEFAULT CHARSET=utf8 COMMENT='wallet user polls';
 */
 //mining_group_id，associated_rsm，final_results，minority_ids （json（[ids]））, majority_ids
+//0629add
+//ALTER TABLE wallet_user_polls ADD tx_hash varchar(200) DEFAULT '' COMMENT '交易hash' AFTER update_time;
+//ALTER TABLE wallet_user_polls ADD block_id bigint(20) DEFAULT 0 COMMENT 'blockID' AFTER update_time;
+//ALTER TABLE wallet_user_polls drop block_id

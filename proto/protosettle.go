@@ -1,6 +1,8 @@
 package proto
 
 import (
+	"Ethanim_Vote_Server/utils/bytes"
+	"encoding/json"
 	"github.com/shopspring/decimal"
 	"net/http"
 	"time"
@@ -37,14 +39,6 @@ const (
 
 	StatusSuccess      = 200// 调用成功
 
-	StatusDataSelectErr        = 205 //  查询数据库错误
-	SStatusAddrNotFound         = 206 // 用户地址不存在
-	StatusNewAddrNotExist         = 207 // 此类型新地址不存在
-
-	StatusLackBalance       	= 301 // 地址余额不足
-	StatusLackUTXO       		= 303 // 地址充值余额信息未发现
-	StatusAccountNotExisted 	= 304 // 地址不存在
-	StatusAccountPrikeyNotExisted 	= 305 //地址私钥不存在
 
 	StatusSignError       		= 400 // 交易签名失败
 	StatusInvalidArgument      	= 401 // 无效输入参数
@@ -238,18 +232,7 @@ func  Success(status ErrorInfo ) bool {
 //20220527add
 
 //client分组周期内对rsm的检测投票msg
-/*
-type ClientVoteReq struct{
-	ClientId string
-	//ClientAddress string	`json:"client_address"`
-	RsmGroupId int
-	Rsmid string
-	VertifyResult bool
-	//投票时间
-	VoteTime int64
-	ClientSignStr string
-}
-*/
+
 type ClientVoteReq struct{
 	ClientId string			`json:"client_id"`
 	//ClientAddress string	`json:"client_address"`
@@ -335,3 +318,50 @@ type RSMVoteGroupMsgs struct{
 }
 
 //20220601add
+type ResultBroadcastTxCommit struct {
+	CheckTx   ResponseCheckTx   `json:"check_tx"`
+	DeliverTx ResponseDeliverTx `json:"deliver_tx"`
+	Hash      bytes.HexBytes         `json:"hash"`
+	Height    int64                  `json:"height"`
+}
+type ResponseDeliverTx struct {
+	Code      uint32  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Data      []byte  `protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`
+	Log       string  `protobuf:"bytes,3,opt,name=log,proto3" json:"log,omitempty"`
+	Info      string  `protobuf:"bytes,4,opt,name=info,proto3" json:"info,omitempty"`
+	GasWanted int64   `protobuf:"varint,5,opt,name=gas_wanted,proto3" json:"gas_wanted,omitempty"`
+	GasUsed   int64   `protobuf:"varint,6,opt,name=gas_used,proto3" json:"gas_used,omitempty"`
+	//Events    []Event `protobuf:"bytes,7,rep,name=events,proto3" json:"events,omitempty"`
+	Codespace string  `protobuf:"bytes,8,opt,name=codespace,proto3" json:"codespace,omitempty"`
+}
+
+type ResponseCheckTx struct {
+	Code      uint32  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Data      []byte  `protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`
+	Log       string  `protobuf:"bytes,3,opt,name=log,proto3" json:"log,omitempty"`
+	Info      string  `protobuf:"bytes,4,opt,name=info,proto3" json:"info,omitempty"`
+	GasWanted int64   `protobuf:"varint,5,opt,name=gas_wanted,proto3" json:"gas_wanted,omitempty"`
+	GasUsed   int64   `protobuf:"varint,6,opt,name=gas_used,proto3" json:"gas_used,omitempty"`
+	//Events    []Event `protobuf:"bytes,7,rep,name=events,proto3" json:"events,omitempty"`
+	Codespace string  `protobuf:"bytes,8,opt,name=codespace,proto3" json:"codespace,omitempty"`
+	Sender    string  `protobuf:"bytes,9,opt,name=sender,proto3" json:"sender,omitempty"`
+	Priority  int64   `protobuf:"varint,10,opt,name=priority,proto3" json:"priority,omitempty"`
+	// mempool_error is set by Tendermint.
+	// ABCI applictions creating a ResponseCheckTX should not set mempool_error.
+	MempoolError string `protobuf:"bytes,11,opt,name=mempool_error,json=mempoolError,proto3" json:"mempool_error,omitempty"`
+}
+
+type RPCResponse struct {
+	JSONRPC string `json:"jsonrpc"`
+	ID      int `json:"id"`
+	//ID      string `json:"id"`
+	CODE    int    `json:"code"`
+	//Result	 []byte `json:"result,omitempty"`
+	Result json.RawMessage `json:"result,omitempty"`
+	Error   *RPCError       `json:"error,omitempty"`
+}
+type RPCError struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+	Data    string `json:"data,omitempty"`
+}

@@ -74,8 +74,7 @@ func  ClientVoteRecordSave(curengine *xorm.Engine,clientId string,rmsid string,r
 	//log.Info("ClientVoteRecordSave(),Insert row success!,rec is :%v,rowsnum is:%d \n", curClientVote,rows)
 	return nil
 }
-
-func  InsertGroupRSMVotes(curengine *xorm.Engine,groupId int,rmsid string,vertifyresult int,trustvoteids,untrustvoteids string,slackvoteids string) error {
+func  GetGroupRSMVotesMsgs(groupId int,rmsid string,vertifyresult int,trustvoteids,untrustvoteids string,slackvoteids string) (curwalletuserrecord *models.WalletUserPolls) {
 	curUserVoteRsm := &models.WalletUserPolls{
 		MiningGroupId: groupId,
 		AssociatedRsm:	rmsid,
@@ -87,6 +86,22 @@ func  InsertGroupRSMVotes(curengine *xorm.Engine,groupId int,rmsid string,vertif
 		CreateTime:time.Now(),
 		UpdateTime:time.Now(),
 	}
+	return curUserVoteRsm
+}
+func  InsertGroupRSMVotes(curengine *xorm.Engine,groupId int,rmsid string,vertifyresult int,trustvoteids,untrustvoteids string,slackvoteids string,txhash string,blockheight int64) (err error) {
+	curUserVoteRsm := &models.WalletUserPolls{
+		MiningGroupId: groupId,
+		AssociatedRsm:	rmsid,
+		BlockNums:		1,
+		FinalResults:	vertifyresult,
+		TrustVoteIds:	trustvoteids,
+		UntrustVoteIds:untrustvoteids,
+		SlackVoteIds:	slackvoteids,
+		CreateTime:time.Now(),
+		UpdateTime:time.Now(),
+		TxHash:txhash,
+		BlockId: blockheight,
+	}
 
 	////time.Now().Unix()
 	rows, err := curengine.Table(models.TableWalletUserPollsRecord).Insert(curUserVoteRsm)
@@ -96,7 +111,7 @@ func  InsertGroupRSMVotes(curengine *xorm.Engine,groupId int,rmsid string,vertif
 
 	}
 	log.Info("InsertGroupRSMVotes(),Insert row success!,rec is :%v,rowsnum is:%d \n", curUserVoteRsm,rows)
-	return nil
+	return  nil
 }
 
 

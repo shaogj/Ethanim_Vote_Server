@@ -13,7 +13,7 @@
 
 		}
 	],
-	"group_server_url": "http://210.73.218.171:5000",
+	"group_server_url": "http://192.168.1.223:5000",
 	"request_interval": 30,
 	"MySqlConfig": {
 		"host": "101.251.211.200",
@@ -22,6 +22,7 @@
 		"port": 3306,
 		"dbname": "ethanim_rsm"
 	},
+	"NodeUrl": "http://101.251.211.201:21630/tri_broadcast_tx_commit?",
 	"WebPort": 7200
 }
 
