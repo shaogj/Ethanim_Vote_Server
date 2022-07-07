@@ -4,16 +4,11 @@
     <list default="true" id="6e2883ef-cae6-4ea0-a4f0-3ad15c92c667" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/configtool.go" beforeDir="false" afterPath="$PROJECT_DIR$/config/configtool.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/handle/handle.go" beforeDir="false" afterPath="$PROJECT_DIR$/handle/handle.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handle/req_unit.go" beforeDir="false" afterPath="$PROJECT_DIR$/handle/req_unit.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/error/main.txt" beforeDir="false" afterPath="$PROJECT_DIR$/logs/error/main.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/info/main.txt" beforeDir="false" afterPath="$PROJECT_DIR$/logs/info/main.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main" beforeDir="false" afterPath="$PROJECT_DIR$/main" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/AccountKeyTb.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/AccountKeyTb.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/proto/protosettle.go" beforeDir="false" afterPath="$PROJECT_DIR$/proto/protosettle.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/model.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/model.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

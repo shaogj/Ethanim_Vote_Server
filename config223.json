@@ -1,0 +1,28 @@
+{
+	"bsc_pubkey_addr_maps": [{
+		"bsc_node_pubkey_addr": "0x38580eFe497b22ACc29783273e725a2a4F2AEEA4",
+		"tm_node_pubkey_addr": "9889f13e2a9ba08140f17b42ef5ed6c5TMPubkey11"
+		},
+		{
+			"bsc_node_pubkey_addr": "0x29dA95fa6ed88b431218A54bd8dFEAD68918A3B5",
+			"tm_node_pubkey_addr": "821a12d263c93ee624e7bb8fd35800Pubkey222"
+		},
+		{
+			"bsc_node_pubkey_addr": "0x947DD1558257a631049Fad9D686f427F86033c16",
+			"tm_node_pubkey_addr": "4145b7dbcb8637848604ad3Pubkey333"
+
+		}
+	],
+	"group_server_url": "http://192.168.1.223:5000",
+	"request_interval": 30,
+	"MySqlConfig": {
+		"host": "101.251.211.200",
+		"user": "8lab",
+		"password": "8lab",
+		"port": 3306,
+		"dbname": "ethanim_rsm"
+	},
+	"NodeUrl": "http://101.251.211.201:21630/tri_broadcast_tx_commit?",
+	"WebPort": 7200
+}
+

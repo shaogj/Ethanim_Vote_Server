@@ -13,7 +13,7 @@
 
 		}
 	],
-	"group_server_url": "http://192.168.1.223:5000",
+	"group_server_url": "http://210.73.218.170:21000",
 	"request_interval": 30,
 	"MySqlConfig": {
 		"host": "101.251.211.200",

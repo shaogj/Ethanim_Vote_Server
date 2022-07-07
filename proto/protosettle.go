@@ -229,13 +229,9 @@ func  Success(status ErrorInfo ) bool {
 
 }
 
-//20220527add
-
 //client分组周期内对rsm的检测投票msg
-
 type ClientVoteReq struct{
 	ClientId string			`json:"client_id"`
-	//ClientAddress string	`json:"client_address"`
 	RsmGroupId int		`json:"rsm_group_id"`
 	Rsmid string			`json:"rms_id"`
 	VertifyResult bool		`json:"vertify_result"`
@@ -255,11 +251,12 @@ type ReturnInfo struct {
 	ResultCode int `json:"code"`
 	ResultMsg string `json:"msg"`
 }
+//服务分组投票请求
 type RsmServerGroupReq struct{
 	//VoteServerId int64	`json:"vote_server_id"`
 	VoteSignStr string
 }
-
+//服务分组投票响应
 type RsmServerGroupResq struct{
 	ReturnInfo
 	Startime int64	`json:"start_time"`
@@ -270,13 +267,10 @@ type RsmServerGroupResq struct{
 	GroupItems	[]GroupItems  `json:"groups"`
 	RsmGroupId	int	`json:"group_id"`
 
-	//map[Rsmnode][]string
 	ServerSignStr string
 }
-//0607add
 
 type GroupAttachRSM struct {
-	//RMSGroupList map[string][]string
 	RMSGroupList [][]interface{}
 }
 type GroupItems struct{
