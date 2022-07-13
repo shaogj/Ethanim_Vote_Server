@@ -597,7 +597,7 @@ func (this *VoteServer) ResetGroupVotesMap(interval int) {
 		case <-ticker.C:
 			curmin := time.Now().Minute()
 			newcyclestart, _ := service.GetDayTodayLastMinute(time.Now().Unix(), curmin)
-			log.Info("run ticker task ResetGroupVotesMap()，curmin is:%d,newcyclestart is:%d，this.ServerGroup len is:%d",curmin,newcyclestart,len(this.ServerGroup))
+			log.Info("run ticker task ResetGroupVotesMap()，curmin is:%d,newcyclestart is:%d，this.ServerGroup len is:%d,cur LastestGroupId is:%d",curmin,newcyclestart,len(this.ServerGroup),this.LastestGroupId)
 			//to do,,获取上一个周期时间的投票分组信息,to single队列任务
 			for groupkey,groupitem := range this.ServerGroup {
 				if groupkey.GroupId != int(this.LastestGroupId) {
