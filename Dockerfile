@@ -6,9 +6,6 @@ ENV GIT_TOKEN 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
 ENV project Ethanim_Vote_Server
 ENV name vote-server
 
-ADD proxychains4 /usr/local/bin/proxychains4
-ADD libproxychains4.so /usr/local/lib/libproxychains4.so
-ADD proxychains.conf /etc/proxychains.conf
 ADD build/sources.list /etc/sources.list
 ADD . /data/go/src/${project}
 WORKDIR /data/go/src/${project}
